@@ -2,22 +2,27 @@ import requests
 import telegram
 import os
 from datetime import datetime
-from chart import get_chart
 
 BOT_TOKEN = os.getenv("BOT_TOKEN")
 CHAT_ID = os.getenv("CHAT_ID")
+GOLD_API_KEY = os.getenv("GOLD_API_KEY")
+
 bot = telegram.Bot(token=BOT_TOKEN)
 
 def get_xauusd_price():
-    url = "https://api.metals.live/v1/spot/gold"
-    res = requests.get(url).json()
-    return float(res[0][1])  # live price
+    url = "https://www.goldapi.io/api/XAU/USD"
+    headers = {"x-access-token": GOLD_API_KEY}
+    
+    res = requests.get(url, headers=headers)
+    data = res.json()
+    
+    return float(data["price"])
 
 def send_gold_signal():
     price = get_xauusd_price()
 
     # Simple Auto Logic
-    if price % 2 == 0:
+    if int(price) % 2 == 0:
         signal = "SELL"
     else:
         signal = "BUY"
