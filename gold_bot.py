@@ -8,25 +8,25 @@ CHAT_ID = os.getenv("CHAT_ID")
 bot = telegram.Bot(token=BOT_TOKEN)
 
 def get_xauusd_price():
-    url = "https://api.metals.live/v1/spot/gold"
+    url = "https://api.binance.com/api/v3/ticker/price?symbol=XAUUSD"
     res = requests.get(url).json()
-    return float(res[0][1])  # <-- correct way
+    return float(res["price"])
 
 def send_gold_signal():
     price = get_xauusd_price()
 
     # Simple Auto Logic
-    if int(price) % 2 == 0:
+    if price % 2 == 0:
         signal = "SELL"
     else:
         signal = "BUY"
 
-    tp1 = price - 2 if signal=="SELL" else price + 2
-    tp2 = price - 4 if signal=="SELL" else price + 4
-    tp3 = price - 6 if signal=="SELL" else price + 6
-    tp4 = price - 8 if signal=="SELL" else price + 8
-    tp5 = price - 10 if signal=="SELL" else price + 10
-    sl  = price + 4 if signal=="SELL" else price - 4
+    tp1 = price - 2 if signal == "SELL" else price + 2
+    tp2 = price - 4 if signal == "SELL" else price + 4
+    tp3 = price - 6 if signal == "SELL" else price + 6
+    tp4 = price - 8 if signal == "SELL" else price + 8
+    tp5 = price - 10 if signal == "SELL" else price + 10
+    sl  = price + 4 if signal == "SELL" else price - 4
 
     msg = f"""
 📉 **XAUUSD {signal} NOW**
