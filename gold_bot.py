@@ -8,16 +8,17 @@ CHAT_ID = os.getenv("CHAT_ID")
 bot = telegram.Bot(token=BOT_TOKEN)
 
 def get_xauusd_price():
-    url = "https://api.metals.live/v1/spot/gold"
-    res = requests.get(url).json()
-
-    # response example: [ {"gold": 2371.4} ]
-    return float(res[0]["gold"])
+    url = "https://www.goldapi.io/api/XAU/USD"
+    headers = {
+        "x-access-token": "goldapi-demo-key-0000-0000-0000-000000000000",
+        "Content-Type": "application/json"
+    }
+    res = requests.get(url, headers=headers).json()
+    return float(res["price"])
 
 def send_gold_signal():
     price = get_xauusd_price()
 
-    # Simple Auto Logic
     signal = "SELL" if int(price) % 2 == 0 else "BUY"
 
     tp1 = price - 2 if signal == "SELL" else price + 2
