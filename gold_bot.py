@@ -8,19 +8,17 @@ CHAT_ID = os.getenv("CHAT_ID")
 bot = telegram.Bot(token=BOT_TOKEN)
 
 def get_xauusd_price():
-    url = "https://api.binance.com/api/v3/ticker/price?symbol=GOLDUSDT"
+    url = "https://api.metals.live/v1/spot/gold"
     res = requests.get(url).json()
 
-    if "price" not in res:
-        raise Exception(f"API Error: {res}")
-
-    return float(res["price"])
+    # response example: [ {"gold": 2371.4} ]
+    return float(res[0]["gold"])
 
 def send_gold_signal():
     price = get_xauusd_price()
 
     # Simple Auto Logic
-    signal = "SELL" if price % 2 == 0 else "BUY"
+    signal = "SELL" if int(price) % 2 == 0 else "BUY"
 
     tp1 = price - 2 if signal == "SELL" else price + 2
     tp2 = price - 4 if signal == "SELL" else price + 4
