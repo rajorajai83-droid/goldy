@@ -1,20 +1,17 @@
 import requests
 import telegram
 import os
-from datetime import datetime
 
 BOT_TOKEN = os.getenv("BOT_TOKEN")
 CHAT_ID = os.getenv("CHAT_ID")
 bot = telegram.Bot(token=BOT_TOKEN)
 
 def get_xauusd_price():
-    url = "https://www.goldapi.io/api/XAU/USD"
-    headers = {
-        "x-access-token": "goldapi-demo-key-0000-0000-0000-000000000000",
-        "Content-Type": "application/json"
-    }
-    res = requests.get(url, headers=headers).json()
-    return float(res["price"])
+    url = "https://api.exchangerate.host/latest?base=XAU&symbols=USD"
+    res = requests.get(url).json()
+
+    # price is inside: res["rates"]["USD"]
+    return float(res["rates"]["USD"])
 
 def send_gold_signal():
     price = get_xauusd_price()
